@@ -1,6 +1,6 @@
 # **2048**
 
-2048 is 2D puzzle game and written in Unity 2021.3.3f1.
+2048 is a 2D puzzle game and written in Unity 2021.3.3f1.
 
 
 # **How To Play**
