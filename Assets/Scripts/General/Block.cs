@@ -35,38 +35,32 @@ public class Block : MonoBehaviour
             case 2:
                 sr.color = cs.colorList[0];
                 blockValueText.text = "2";
-                blockValueText.fontSize = 8;
-                blockValueText.color = Color.black;
+                blockValueText.fontSize = 7;             
                 break;
             case 4:
                 sr.color = cs.colorList[1];
                 blockValueText.text = "4";
-                blockValueText.fontSize = 8;
-                blockValueText.color = Color.black;
+                blockValueText.fontSize = 7;
                 break;
             case 8:
                 sr.color = cs.colorList[2];
                 blockValueText.text = "8";
-                blockValueText.fontSize = 8;
-                blockValueText.color = Color.black;
+                blockValueText.fontSize = 7;
                 break;
             case 16:
                 sr.color = cs.colorList[3];
                 blockValueText.text = "16";
                 blockValueText.fontSize = 6.5f;
-                blockValueText.color = Color.black;
                 break;
             case 32:
                 sr.color = cs.colorList[4];
                 blockValueText.text = "32";
                 blockValueText.fontSize = 6.5f;
-                blockValueText.color = Color.black;
                 break;
             case 64:
                 sr.color = cs.colorList[5];
                 blockValueText.text = "64";
                 blockValueText.fontSize = 6.5f;
-                blockValueText.color = Color.black;
                 break;
             case 128:
                 sr.color = cs.colorList[6];

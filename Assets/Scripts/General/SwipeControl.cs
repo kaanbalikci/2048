@@ -4,19 +4,30 @@ using UnityEngine;
 
 public class SwipeControl : MonoBehaviour
 {
+    public static SwipeControl SC;
+
     Vector2 firstPos;
     Vector2 secondPos;
 
+    public string swipeWay = "";
 
-    void Update()
+    public bool move;
+    private void Awake()
     {
-      
-        Swipe();
-        
+        SC = this;
+    }
+
+    private void Update()
+    {
+        if (swipeWay == "") 
+        {
+            Swipe();
+        }
+        Debug.Log(swipeWay);
         
     }
 
-    public void Swipe()
+    public void Swipe() //Check swipe direction
     {
         
         if (Input.GetMouseButtonDown(0))
@@ -41,10 +52,13 @@ public class SwipeControl : MonoBehaviour
             {
                 if(controlX < 0)
                 {
+                    swipeWay = "Right";
                     Debug.Log("Right");
+                    
                 }
                 else if(controlX > 0)
                 {
+                    swipeWay = "Left";
                     Debug.Log("Left");
                 }
             }
@@ -52,10 +66,12 @@ public class SwipeControl : MonoBehaviour
             {
                 if (controlY < 0)
                 {
+                    swipeWay = "Up";
                     Debug.Log("Up");
                 }
                 else if (controlY > 0)
                 {
+                    swipeWay = "Down";
                     Debug.Log("Down");
                 }
             }
