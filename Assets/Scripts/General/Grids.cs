@@ -28,7 +28,12 @@ public class Grids : MonoBehaviour
             myOBJ = null;
             myOBJScript = null;
         }
+
+
+
     }
+
+
 
 
 }

@@ -128,6 +128,7 @@ MonoBehaviour:
   value: 0
   color: 0
   canUpgrade: 1
+  defColor: {r: 0.22745098, g: 0.19215687, b: 0.19215687, a: 1}
   cs: {fileID: 11400000, guid: 10778cde1dc009340b75da47f2a7dd00, type: 2}
   blockValueText: {fileID: 1933468228480416521}
   holdNo: 0200000004000000

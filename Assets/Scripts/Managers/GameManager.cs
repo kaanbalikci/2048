@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject grid;
     [SerializeField] private GameObject boardPrefab;
     [SerializeField] private GameObject blockPrefab;
+    [SerializeField] private GameObject gameOverPanel;
 
     //Private inputs
     private GameObject temporaryObj;
@@ -32,8 +33,11 @@ public class GameManager : MonoBehaviour
     private int width = 4;
     private int height = 4;
 
+    private int isMove = 0;
+    
+
     //Public inputs
-    public int score = 0;
+    public static int score = 0;
     public int highScore = 0;
 
     //Event
@@ -45,7 +49,6 @@ public class GameManager : MonoBehaviour
         Grid();  
     }
 
-
     private void Start()
     {
         //FirstBlocks();
@@ -55,7 +58,26 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+
+        
         MoveFunction();
+        
+    }
+
+    public void Grid() // Instantiate grids
+    {
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                var _grid = Instantiate(grid, new Vector2(i, j), Quaternion.identity);
+                gridList.Add(_grid);
+            }
+        }
+        var center = new Vector2((float)width / 2 - 0.5f, (float)height / 2 - 0.5f);
+        var board = Instantiate(boardPrefab, center, Quaternion.identity);
+
+        FirstBlocks();
     }
 
     private void MoveFunction() // swipe all block to swipeway
@@ -67,11 +89,12 @@ public class GameManager : MonoBehaviour
                 for (int j = 0; j < 4; j++)
                 {
                     int x = ((i * 4) - j) - 1;
-                    //Debug.Log(x);
+                    Vector2 checkPos;
 
                     if (gridList[x].GetComponent<Grids>().myOBJ != null)
                     {
                         temporaryObj = gridList[x].GetComponent<Grids>().myOBJ; //take this object's script
+                        checkPos = temporaryObj.transform.position;
                     }
                     else
                     {
@@ -85,10 +108,9 @@ public class GameManager : MonoBehaviour
                     {
                         if (hitUp.collider.CompareTag("Corner")) //if has no block in front of this object go default pos
                         {
-                            Debug.Log(hitUp.collider.tag);
-                            //temporaryObj.transform.position = new Vector2(temporaryObj.transform.position.x, 3);
                             temporaryObj.transform.DOMoveY(3, 0.1f);
-                            previousPos = new Vector2(temporaryObj.transform.position.x, 3);
+                            previousPos = new Vector2(temporaryObj.transform.position.x, 3);      
+                            
                         }
 
                         else if (hitUp.collider.CompareTag("Block")) //if has block in front of this object:
@@ -98,20 +120,20 @@ public class GameManager : MonoBehaviour
                             GameObject hitObj = hitUp.collider.gameObject; //take that object
 
                             if (Upgradable(myObjsc, hitObjsc)) // if two blocks value's are same combine these blocks
-                            {
+                            { 
                                 CombineTwoBlock(temporaryObj, hitObj, myObjsc, hitObjsc, previousPos);
                             }
                             else
                             {
-                                //temporaryObj.transform.position = new Vector2(temporaryObj.transform.position.x, hitObj.transform.position.y - 1);
                                 temporaryObj.transform.DOMoveY(previousPos.y - 1, 0.1f);
                                 previousPos = new Vector2(temporaryObj.transform.position.x, previousPos.y- 1);
                             }
                             
                         }
                     }
+                    CheckisMove(temporaryObj.transform.position, previousPos);
 
-                    
+
                 }
             }
             for (int i = 0; i < temporaryList.Count; i++) // open upgradable of block
@@ -121,6 +143,7 @@ public class GameManager : MonoBehaviour
             temporaryList.Clear();
             SwipeControl.SC.swipeWay = "";
             StartCoroutine(spawnBlock());
+            
         }
         if (SwipeControl.SC.swipeWay == "Left") //LEFT 3 7 11 15
         {
@@ -129,11 +152,12 @@ public class GameManager : MonoBehaviour
                 for (int j = 0; j < 4; j++)
                 {
                     int x = ((j * 4) + 3 - i);
-                    //Debug.Log(x);
+                    Vector2 checkPos;
 
                     if (gridList[x].GetComponent<Grids>().myOBJ != null)
                     {
                         temporaryObj = gridList[x].GetComponent<Grids>().myOBJ;
+                        checkPos = temporaryObj.transform.position;
 
                     }
                     else
@@ -148,8 +172,6 @@ public class GameManager : MonoBehaviour
                     {
                         if (hitLeft.collider.CompareTag("Corner"))
                         {
-                            Debug.Log(hitLeft.collider.tag);
-                            //temporaryObj.transform.position = new Vector2(0, temporaryObj.transform.position.y);
                             temporaryObj.transform.DOMoveX(0, 0.1f);
                             previousPos = new Vector2(0, temporaryObj.transform.position.y);
                         }
@@ -167,13 +189,12 @@ public class GameManager : MonoBehaviour
                             }
                             else
                             {
-                                //temporaryObj.transform.position = new Vector2(hitObj.transform.position.x + 1, temporaryObj.transform.position.y);
                                 temporaryObj.transform.DOMoveX(previousPos.x + 1, 0.1f);
                                 previousPos = new Vector2(previousPos.x + 1, temporaryObj.transform.position.y);
                             }
                         }
                     }
-
+                    CheckisMove(temporaryObj.transform.position, previousPos);
                 }
 
             }
@@ -184,7 +205,7 @@ public class GameManager : MonoBehaviour
             temporaryList.Clear();
             SwipeControl.SC.swipeWay = "";
             StartCoroutine(spawnBlock());
-            //spawnBlock();
+
         }
         if (SwipeControl.SC.swipeWay == "Right") //Right 15 11 7 3
         {
@@ -193,11 +214,13 @@ public class GameManager : MonoBehaviour
                 for (int j = 4; j > 0; j--)
                 {
                     int x = ((j * 4) - (1 * i));
-                    //Debug.Log(x);
+
+                    Vector2 checkPos;
 
                     if (gridList[x].GetComponent<Grids>().myOBJ != null)
                     {
                         temporaryObj = gridList[x].GetComponent<Grids>().myOBJ;
+                        checkPos = temporaryObj.transform.position;
                     }
                     else
                     {
@@ -211,10 +234,9 @@ public class GameManager : MonoBehaviour
                     {
                         if (hitRight.collider.CompareTag("Corner"))
                         {
-                            Debug.Log(hitRight.collider.tag);
-                            //temporaryObj.transform.position = new Vector2(3, temporaryObj.transform.position.y);
                             temporaryObj.transform.DOMoveX(3, 0.1f);
                             previousPos = new Vector2(3, temporaryObj.transform.position.y);
+                          
                         }
 
                         else if (hitRight.collider.CompareTag("Block"))
@@ -226,17 +248,17 @@ public class GameManager : MonoBehaviour
                             if (Upgradable(myObjsc, hitObjsc))
                             {
                                 CombineTwoBlock(temporaryObj, hitObj, myObjsc, hitObjsc, previousPos);
+                               
 
                             }
                             else
                             {
-                                //temporaryObj.transform.position = new Vector2(hitObj.transform.position.x - 1, temporaryObj.transform.position.y);
                                 temporaryObj.transform.DOMoveX(previousPos.x - 1, 0.1f);
                                 previousPos = new Vector2(previousPos.x - 1, temporaryObj.transform.position.y);
                             }
                         }
                     }
-
+                    CheckisMove(temporaryObj.transform.position, previousPos);
                 }
             }
             for (int i = 0; i < temporaryList.Count; i++)
@@ -246,7 +268,6 @@ public class GameManager : MonoBehaviour
             temporaryList.Clear();
             SwipeControl.SC.swipeWay = "";
             StartCoroutine(spawnBlock());
-            //spawnBlock();
         }
         if (SwipeControl.SC.swipeWay == "Down") //Down 3 7 11 15
         {
@@ -255,7 +276,6 @@ public class GameManager : MonoBehaviour
                 for (int j = 0; j < 4; j++)   // 0 1 2 3 1 
                 {
                     int x = j + (4*i);
-                    Debug.Log(x);
 
                     if (gridList[x].GetComponent<Grids>().myOBJ != null)
                     {
@@ -273,8 +293,6 @@ public class GameManager : MonoBehaviour
                     {
                         if (hitUp.collider.CompareTag("Corner"))
                         {
-                            Debug.Log(hitUp.collider.tag);
-                            //temporaryObj.transform.position = new Vector2(temporaryObj.transform.position.x, 0);
                             temporaryObj.transform.DOMoveY(0, 0.1f);
                             previousPos = new Vector2(temporaryObj.transform.position.x, 0);
                         }
@@ -292,15 +310,13 @@ public class GameManager : MonoBehaviour
                             }
                             else
                             {
-                                //temporaryObj.transform.position = new Vector2(temporaryObj.transform.position.x, hitObj.transform.position.y + 1);
                                 temporaryObj.transform.DOMoveY(previousPos.y + 1, 0.1f);
                                 previousPos = new Vector2(temporaryObj.transform.position.x, previousPos.y + 1);
                             }
                         }
                     }
-                }
-                
-
+                    CheckisMove(temporaryObj.transform.position, previousPos);
+                }              
             }
             for (int i = 0; i < temporaryList.Count; i++)
             {
@@ -309,9 +325,18 @@ public class GameManager : MonoBehaviour
             temporaryList.Clear();
             SwipeControl.SC.swipeWay = "";
             StartCoroutine(spawnBlock());
-            //spawnBlock();
         }
     }
+
+    private void CheckisMove(Vector2 startPos, Vector2 arrivePos)
+    {
+        // if these two vectors are equal isMove input +1 and if ismove equal to 0 it means dont spawn new block 
+        if((int)startPos.x != (int)arrivePos.x || (int)startPos.y != (int)arrivePos.y)
+        {
+            isMove++;
+        }
+    }
+
     private bool Upgradable(Block myObj, Block hitObj)
     {
         // if these objects values are same and myobj's canupgrade true and hitobj's canupgrade true, return true means can upgradable
@@ -326,7 +351,7 @@ public class GameManager : MonoBehaviour
 
         temporaryList.Add(firstObjsc);
 
-        Destroy(secondObj, 0.08f);
+        Destroy(secondObj, 0.11f);
 
         firstObj.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
         firstObj.transform.DOScale(defaultScale, 0.3f);
@@ -334,38 +359,22 @@ public class GameManager : MonoBehaviour
 
         score += firstObjsc.value;
 
+
         if(score > highScore)
         {
             highScore = score;
             PlayerPrefs.SetInt("High Score", highScore);
+            UpdateHighScore?.Invoke(highScore);
         }
 
-        UpdateHighScore?.Invoke(highScore);
+        
         UpdateScore?.Invoke(score);
     }
 
-    private void isMove()
-    {
-        
-    }
-    public void Grid() // Instantiate grids
-    {
-        for (int i = 0; i < width; i++)
-        {
-            for (int j = 0; j < height; j++)
-            {
-                var _grid = Instantiate(grid, new Vector2(i, j), Quaternion.identity);
-                gridList.Add(_grid);                          
-            }
-        }
-        var center = new Vector2((float)width / 2 - 0.5f, (float)height / 2 - 0.5f);
-        var board = Instantiate(boardPrefab, center, Quaternion.identity);
-
-        FirstBlocks();
-    }
+   
 
 
-    public void FirstBlocks()
+    public void FirstBlocks() //When start game spawn randomly pos 2 blocks 
     {
         int x = UnityEngine.Random.Range(0, 16);
         int y = UnityEngine.Random.Range(0, 16);
@@ -409,10 +418,12 @@ public class GameManager : MonoBehaviour
     }*/
 
 
-    public IEnumerator spawnBlock()
+
+    public IEnumerator spawnBlock() //Spawn block after every move
     {
+
         yield return new WaitForSeconds(0.12f);
-        
+
         for (int i = 0; i < gridList.Count; i++)
         {
             if (gridList[i].GetComponent<Grids>().myOBJ == null)
@@ -420,19 +431,26 @@ public class GameManager : MonoBehaviour
                 emptyList.Add(gridList[i].transform);
             }
         }
-        if(emptyList.Count != 0)
+        if(isMove != 0)
         {
+            //Spawn new block
             int x = UnityEngine.Random.Range(0, emptyList.Count);
             GameObject xObj = Instantiate(blockPrefab, emptyList[x].transform.position, Quaternion.identity);
             xObj.transform.DOScale(defaultScale, 0.2f);
-            emptyList.Clear();
+
+
         }
-        else
+
+        if(emptyList.Count == 0)
         {
             //GameOver
+            gameOverPanel.SetActive(true);
+            Time.timeScale = 0.0f;
         }
-        
+        emptyList.Clear();
+        isMove = 0;
     }
+
 
 
 

@@ -9,7 +9,12 @@ public class UIManager : MonoBehaviour
 
     public TMP_Text scoreText;
     public TMP_Text highScoreText;
+    public TMP_Text score2Text;
 
+    private void Update()
+    {
+        score2Text.text = GameManager.score.ToString();
+    }
     private void Awake()
     {
         UI = this;

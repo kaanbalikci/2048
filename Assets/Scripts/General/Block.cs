@@ -9,6 +9,7 @@ public class Block : MonoBehaviour
     public int value;
     public int color;
     public bool canUpgrade = true;
+    public Color defColor;
 
     [SerializeField] private ColorScript cs;
     [SerializeField] private TMP_Text blockValueText;
@@ -30,71 +31,57 @@ public class Block : MonoBehaviour
 
     private void Update()
     {
-        switch (value)
+        switch (value) // this function set different settings for every value
         {
             case 2:
-                sr.color = cs.colorList[0];
-                blockValueText.text = "2";
-                blockValueText.fontSize = 7;             
+                UpdateBlock(0, "2", 7f, defColor);       
                 break;
             case 4:
-                sr.color = cs.colorList[1];
-                blockValueText.text = "4";
-                blockValueText.fontSize = 7;
+                UpdateBlock(1, "4", 7f, defColor);
                 break;
             case 8:
-                sr.color = cs.colorList[2];
-                blockValueText.text = "8";
-                blockValueText.fontSize = 7;
+                UpdateBlock(2, "8", 7f, defColor);
                 break;
             case 16:
-                sr.color = cs.colorList[3];
-                blockValueText.text = "16";
-                blockValueText.fontSize = 6.5f;
+                UpdateBlock(3, "16", 6.5f, defColor);
                 break;
             case 32:
-                sr.color = cs.colorList[4];
-                blockValueText.text = "32";
-                blockValueText.fontSize = 6.5f;
+                UpdateBlock(4, "32", 6.5f, defColor);
                 break;
             case 64:
-                sr.color = cs.colorList[5];
-                blockValueText.text = "64";
-                blockValueText.fontSize = 6.5f;
+                UpdateBlock(5, "64", 6.5f, defColor);
                 break;
             case 128:
-                sr.color = cs.colorList[6];
-                blockValueText.text = "128";
-                blockValueText.fontSize = 5;
-                blockValueText.color = Color.white;
+                UpdateBlock(6, "128", 5f, Color.white);
                 break;
             case 256:
-                sr.color = cs.colorList[7];
-                blockValueText.text = "256";
-                blockValueText.fontSize = 5;
-                blockValueText.color = Color.white;
+                UpdateBlock(7, "256", 5f, Color.white);
                 break;
             case 512:
-                sr.color = cs.colorList[8];
-                blockValueText.text = "512";
-                blockValueText.fontSize = 5;
-                blockValueText.color = Color.white;
+                UpdateBlock(8, "512", 5f, Color.white);
                 break;
             case 1024:
-                sr.color = cs.colorList[9];
-                blockValueText.text = "1024";
-                blockValueText.fontSize = 3.5f;
-                blockValueText.color = Color.white;
+                UpdateBlock(9, "1024", 3.5f, Color.white);
                 break;
             case 2048:
-                sr.color = cs.colorList[10];
-                blockValueText.text = "2048";
-                blockValueText.fontSize = 3.5f;
-                blockValueText.color = Color.white;
+                UpdateBlock(10, "2048", 3.5f, Color.white);
                 break;
 
         }
+
+        if(value > 2050)
+        {
+            UpdateBlock(11 , value.ToString() , 2.5f, Color.white);
+        }
     }
 
+    private void UpdateBlock(int x,string text,float fontSize,Color _color)
+    {
+        sr.color = cs.colorList[x]; //Block color
+        blockValueText.text = text; //Block number
+        blockValueText.fontSize = fontSize; //Block text size
+        blockValueText.color = _color; //Block text color
+        
+    }
 
 }
